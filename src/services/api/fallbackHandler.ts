@@ -142,8 +142,9 @@ export async function request<T>(path: string, options?: RequestInit): Promise<T
 
     if (isNetworkError || isFallbackStatus) {
       if (isProjectApiPath(path)) {
+        const currentEndpoint = baseUrl.replace(/\/api$/, '');
         const msg = isNetworkError
-          ? 'Backend server is offline. Start Spring Boot on http://localhost:8080 to save projects to the database.'
+          ? `Backend server is offline. Start Spring Boot on ${currentEndpoint} to save projects to the database.`
           : (err?.message || 'Failed to sync project with the database.');
         throw new Error(msg);
       }

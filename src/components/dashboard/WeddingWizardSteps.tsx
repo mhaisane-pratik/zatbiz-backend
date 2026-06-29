@@ -126,8 +126,19 @@ export default function WeddingWizardSteps({
     e.preventDefault();
     if (isSigningUp) return;
     setIsSigningUp(true);
+    const getApiUrl = () => {
+      if (process.env.NEXT_PUBLIC_API_URL) {
+        return process.env.NEXT_PUBLIC_API_URL.replace(/\/$/, '');
+      }
+      if (typeof window !== 'undefined') {
+        const saved = localStorage.getItem('zatbizApiEndpoint');
+        if (saved) return saved.replace(/\/$/, '');
+      }
+      return 'http://localhost:8080';
+    };
+    const baseUrl = getApiUrl();
     try {
-      await fetch('http://localhost:8080/api/auth/register', {
+      await fetch(`${baseUrl}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, email, password }),

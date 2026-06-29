@@ -59,7 +59,9 @@ export default function DashboardPage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Spring Boot backend settings
-  const [apiEndpoint, setApiEndpoint] = useState('http://localhost:8080');
+  const [apiEndpoint, setApiEndpoint] = useState(
+    process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
+  );
   const [backendStatus, setBackendStatus] = useState<'testing' | 'online' | 'offline'>('testing');
 
   // Create empty project modal state
@@ -141,6 +143,8 @@ export default function DashboardPage() {
     const savedEndpoint = localStorage.getItem('zatbizApiEndpoint');
     if (savedEndpoint) {
       setApiEndpoint(savedEndpoint);
+    } else if (process.env.NEXT_PUBLIC_API_URL) {
+      setApiEndpoint(process.env.NEXT_PUBLIC_API_URL);
     }
 
     const promoClosed = localStorage.getItem('zatbiz_promo_closed') === 'true';
@@ -197,7 +201,7 @@ export default function DashboardPage() {
     } catch (err) {
       console.error('API Error:', err);
       showToast(
-        'Could not load projects from the database. Ensure Spring Boot is running on http://localhost:8080 and you are logged in.',
+        `Could not load projects from the database. Ensure Spring Boot is running on ${apiEndpoint} and you are logged in.`,
         true
       );
     } finally {

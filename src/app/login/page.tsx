@@ -18,6 +18,9 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   const getApiBaseUrl = () => {
+    if (process.env.NEXT_PUBLIC_API_URL) {
+      return process.env.NEXT_PUBLIC_API_URL.replace(/\/$/, '');
+    }
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('zatbizApiEndpoint');
       if (saved) {
@@ -85,7 +88,7 @@ export default function LoginPage() {
 
       if (isNetworkError) {
         setError(
-          'Cannot reach the Spring Boot API. Start the backend on http://localhost:8080 before logging in so projects are saved to the database.'
+          `Cannot reach the Spring Boot API. Start the backend on ${baseUrl} before logging in so projects are saved to the database.`
         );
       } else {
         setError(errMsg || 'Something went wrong.');
