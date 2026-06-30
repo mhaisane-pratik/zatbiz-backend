@@ -24,6 +24,19 @@ import WeddingSelectorModal from '@/components/dashboard/WeddingSelectorModal';
 import MedicalShopSelectorModal from '@/components/dashboard/MedicalShopSelectorModal';
 type TabType = 'home' | 'projects' | 'templates' | 'analytics' | 'products' | 'orders' | 'customers' | 'marketing' | 'discounts' | 'integrations' | 'automation' | 'settings' | 'superadmin' | 'themes' | 'browse_products' | 'categories' | 'wishlist' | 'reviews' | 'messages' | 'downloads';
 
+const COLOR_THEMES = [
+  { id: 'theme-indigo', name: 'Indigo', color: '#6366f1' },
+  { id: 'theme-emerald', name: 'Emerald', color: '#10b981' },
+  { id: 'theme-rose', name: 'Rose', color: '#f43f5e' },
+  { id: 'theme-amber', name: 'Amber', color: '#f59e0b' },
+  { id: 'theme-violet', name: 'Violet', color: '#8b5cf6' },
+  { id: 'theme-teal', name: 'Teal', color: '#0d9488' },
+  { id: 'theme-blue', name: 'Blue', color: '#3b82f6' },
+  { id: 'theme-crimson', name: 'Crimson', color: '#dc2626' },
+  { id: 'theme-charcoal', name: 'Charcoal', color: '#475569' },
+  { id: 'theme-sunset', name: 'Sunset', color: '#ea580c' },
+];
+
 export default function DashboardPage() {
   const router = useRouter();
   const [projects, setProjects] = useState<Project[]>([]);
@@ -34,16 +47,24 @@ export default function DashboardPage() {
 
   // Theme state for light/dark mode
   const [themeMode, setThemeMode] = useState<'light' | 'dark'>('light');
+  const [colorTheme, setColorTheme] = useState<string>('theme-indigo');
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('zatbiz_dashboard_theme') || 'light';
     setThemeMode(savedTheme as 'light' | 'dark');
+    const savedColorTheme = localStorage.getItem('zatbiz_dashboard_color_theme') || 'theme-indigo';
+    setColorTheme(savedColorTheme);
   }, []);
 
   const toggleTheme = () => {
     const nextTheme = themeMode === 'light' ? 'dark' : 'light';
     setThemeMode(nextTheme);
     localStorage.setItem('zatbiz_dashboard_theme', nextTheme);
+  };
+
+  const changeColorTheme = (themeName: string) => {
+    setColorTheme(themeName);
+    localStorage.setItem('zatbiz_dashboard_color_theme', themeName);
   };
 
   // Search input state
@@ -1364,7 +1385,7 @@ export default function DashboardPage() {
   );
 
   return (
-    <div className={`h-screen flex overflow-hidden antialiased font-sans transition-colors duration-300 ${themeMode === 'dark' ? 'dark-mode bg-[#0c0a09]' : 'bg-slate-50 text-slate-800'}`}>
+    <div className={`h-screen flex overflow-hidden antialiased font-sans transition-colors duration-300 ${colorTheme} ${themeMode === 'dark' ? 'dark-mode bg-[#0c0a09]' : 'bg-slate-50 text-slate-800'}`}>
       <style>{`
         @keyframes statusPulse {
           0%, 100% { box-shadow: 0 0 4px rgba(16, 185, 129, 0.4); opacity: 0.8; }
@@ -2086,6 +2107,37 @@ export default function DashboardPage() {
               </div>
 
               <form onSubmit={handleSaveSettings} className="space-y-6">
+                <div className="space-y-3 pb-6 border-b border-slate-100">
+                  <span className="block text-xs font-bold text-slate-600 uppercase tracking-wider">
+                    Dashboard Accent Theme Color
+                  </span>
+                  <p className="text-[10px] text-slate-450 font-medium mt-1">
+                    Select a color scheme to apply to all dashboard highlights, badges, and primary buttons.
+                  </p>
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mt-4">
+                    {COLOR_THEMES.map((theme) => (
+                      <button
+                        key={theme.id}
+                        type="button"
+                        onClick={() => changeColorTheme(theme.id)}
+                        className={`flex items-center gap-2.5 p-3 rounded-2xl border text-left cursor-pointer transition-all duration-300 hover:scale-[1.03] select-none ${
+                          colorTheme === theme.id
+                            ? 'border-indigo-600 bg-indigo-50/50 shadow-sm ring-1 ring-indigo-500/25'
+                            : 'border-slate-200 bg-white hover:border-slate-350'
+                        }`}
+                      >
+                        <span
+                          className="w-4.5 h-4.5 rounded-full flex-shrink-0 border border-black/10 shadow-sm"
+                          style={{ backgroundColor: theme.color }}
+                        />
+                        <span className="text-[11px] font-black text-slate-800 tracking-tight">
+                          {theme.name}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 <div>
                   <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">
                     Spring Boot API Server Endpoint
