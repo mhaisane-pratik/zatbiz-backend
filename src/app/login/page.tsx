@@ -74,7 +74,7 @@ export default function LoginPage() {
       : { email: normalizedEmail, password };
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 1500);
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     try {
       const response = await fetch(`${baseUrl}${endpoint}`, {
