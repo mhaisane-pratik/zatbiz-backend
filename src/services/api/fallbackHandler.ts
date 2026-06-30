@@ -142,11 +142,101 @@ export async function request<T>(path: string, options?: RequestInit): Promise<T
 
     if (isNetworkError || isFallbackStatus) {
       if (isProjectApiPath(path)) {
-        const currentEndpoint = baseUrl.replace(/\/api$/, '');
-        const msg = isNetworkError
-          ? `Backend server is offline. Start Spring Boot on ${currentEndpoint} to save projects to the database.`
-          : (err?.message || 'Failed to sync project with the database.');
-        throw new Error(msg);
+        console.warn(`[API Fallback Warning] Falling back to offline projects storage for: ${path}`);
+        const method = options?.method || 'GET';
+
+        // 1. GET /projects (List)
+        if (path === '/projects' && method === 'GET') {
+          let list: any[] = [];
+          if (typeof window !== 'undefined') {
+            const stored = localStorage.getItem('zatbiz_offline_projects');
+            if (stored) {
+              try { list = JSON.parse(stored); } catch {}
+            }
+          }
+          return list as unknown as T;
+        }
+
+        // 2. GET /projects/:id (Get single project details)
+        if (path.match(/\/projects\/\d+/) && method === 'GET') {
+          const idMatch = path.match(/\/projects\/(\d+)/);
+          const id = idMatch ? parseInt(idMatch[1], 10) : 1;
+          if (typeof window !== 'undefined') {
+            const stored = localStorage.getItem('zatbiz_offline_projects');
+            if (stored) {
+              try {
+                const list = JSON.parse(stored) as any[];
+                const found = list.find(p => String(p.id) === String(id));
+                if (found) return found as unknown as T;
+              } catch {}
+            }
+          }
+          throw new Error(`Project with ID ${id} not found in offline storage`);
+        }
+
+        // 3. POST /projects (Create project)
+        if (path === '/projects' && method === 'POST') {
+          const bodyData = options?.body ? JSON.parse(options.body as string) : {};
+          const newProj = {
+            id: Date.now(),
+            name: bodyData.name || 'New Project',
+            description: bodyData.description || '',
+            blocksJson: bodyData.blocksJson || '[]',
+            status: bodyData.status || 'Active',
+            updatedAt: new Date().toISOString()
+          };
+          if (typeof window !== 'undefined') {
+            let list: any[] = [];
+            const stored = localStorage.getItem('zatbiz_offline_projects');
+            if (stored) {
+              try { list = JSON.parse(stored); } catch {}
+            }
+            list.push(newProj);
+            localStorage.setItem('zatbiz_offline_projects', JSON.stringify(list));
+          }
+          return newProj as unknown as T;
+        }
+
+        // 4. PUT /projects/:id (Update project)
+        if (path.match(/\/projects\/\d+/) && method === 'PUT') {
+          const idMatch = path.match(/\/projects\/(\d+)/);
+          const id = idMatch ? parseInt(idMatch[1], 10) : 1;
+          const bodyData = options?.body ? JSON.parse(options.body as string) : {};
+          if (typeof window !== 'undefined') {
+            let list: any[] = [];
+            const stored = localStorage.getItem('zatbiz_offline_projects');
+            if (stored) {
+              try { list = JSON.parse(stored); } catch {}
+            }
+            const idx = list.findIndex(p => String(p.id) === String(id));
+            if (idx !== -1) {
+              list[idx] = { ...list[idx], ...bodyData, updatedAt: new Date().toISOString() };
+              localStorage.setItem('zatbiz_offline_projects', JSON.stringify(list));
+              return list[idx] as unknown as T;
+            }
+          }
+          return bodyData as unknown as T;
+        }
+
+        // 5. DELETE /projects/:id (Delete project)
+        if (path.match(/\/projects\/\d+/) && method === 'DELETE') {
+          const idMatch = path.match(/\/projects\/(\d+)/);
+          const id = idMatch ? parseInt(idMatch[1], 10) : 1;
+          if (typeof window !== 'undefined') {
+            let list: any[] = [];
+            const stored = localStorage.getItem('zatbiz_offline_projects');
+            if (stored) {
+              try {
+                list = JSON.parse(stored);
+                const filtered = list.filter(p => String(p.id) !== String(id));
+                localStorage.setItem('zatbiz_offline_projects', JSON.stringify(filtered));
+              } catch {}
+            }
+          }
+          return { success: true } as unknown as T;
+        }
+
+        throw new Error(`Offline handling not implemented for project path: ${path}`);
       }
 
       console.warn(`[API Fallback Warning] Falling back to client-side mock sandbox for: ${path} (${err?.message || err})`);

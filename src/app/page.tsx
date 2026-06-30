@@ -92,7 +92,7 @@ export default function LandingPage() {
         <div className="w-full relative z-10 flex justify-center">
           <div className="relative w-full aspect-video md:aspect-[21/9] overflow-hidden bg-black shadow-2xl">
             <video 
-              src="/newas.mp4" 
+              src="/ZATBIZ_platform_business_ecosystem_202606301040.mp4" 
               autoPlay 
               loop 
               muted 
