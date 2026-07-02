@@ -46,6 +46,7 @@ public class OrderApiController {
             String city = (String) request.get("city");
             String state = (String) request.get("state");
             String pincode = (String) request.get("pincode");
+            String notes = (String) request.get("notes");
             
             Object itemsObj = request.get("items");
             String itemsJson = itemsObj instanceof String ? (String) itemsObj : objectMapper.writeValueAsString(itemsObj);
@@ -117,6 +118,7 @@ public class OrderApiController {
             order.setCity(city);
             order.setState(state);
             order.setPincode(pincode);
+            order.setNotes(notes);
             order.setStatus("Processing"); // Default status is Processing for paid orders
 
             // Save order first to get ID
