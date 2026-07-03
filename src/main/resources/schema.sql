@@ -485,4 +485,24 @@ CREATE TABLE IF NOT EXISTS restaurant_users (
 ALTER TABLE gym_info ADD COLUMN IF NOT EXISTS header_bg_image TEXT;
 ALTER TABLE gym_info ADD COLUMN IF NOT EXISTS selected_login_layout VARCHAR(255);
 
+-- 31. Travel Agency Information Table
+CREATE TABLE IF NOT EXISTS travel_agency_info (
+    id BIGSERIAL PRIMARY KEY,
+    project_id BIGINT,
+    subcategory VARCHAR(255),
+    business_name VARCHAR(255),
+    owner_name VARCHAR(255),
+    email VARCHAR(255),
+    whatsapp_no VARCHAR(255),
+    phone_no VARCHAR(255),
+    gst_number VARCHAR(255),
+    website_name VARCHAR(255),
+    country VARCHAR(255),
+    state VARCHAR(255),
+    address VARCHAR(1000),
+    description VARCHAR(2000),
+    logo_url TEXT,
+    theme_color VARCHAR(255)
+);
+
 
