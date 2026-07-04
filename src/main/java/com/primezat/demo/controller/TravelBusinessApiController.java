@@ -97,6 +97,9 @@ public class TravelBusinessApiController {
         if (src.getDescription() != null) dest.setDescription(src.getDescription());
         if (src.getLogoUrl() != null) dest.setLogoUrl(src.getLogoUrl());
         if (src.getThemeColor() != null) dest.setThemeColor(src.getThemeColor());
+        if (src.getBannerUrl() != null) dest.setBannerUrl(src.getBannerUrl());
+        if (src.getHeroVideoUrl() != null) dest.setHeroVideoUrl(src.getHeroVideoUrl());
+        if (src.getFaviconUrl() != null) dest.setFaviconUrl(src.getFaviconUrl());
     }
 
     // ==========================================
@@ -337,6 +340,8 @@ public class TravelBusinessApiController {
         if (updated.getDocumentsRequired() != null) existing.setDocumentsRequired(updated.getDocumentsRequired());
         if (updated.getFees() != null) existing.setFees(updated.getFees());
         if (updated.getApprovalStatus() != null) existing.setApprovalStatus(updated.getApprovalStatus());
+        if (updated.getCustomer() != null) existing.setCustomer(updated.getCustomer());
+        if (updated.getEmail() != null) existing.setEmail(updated.getEmail());
         return ResponseEntity.ok(travelVisaRepository.save(existing));
     }
 

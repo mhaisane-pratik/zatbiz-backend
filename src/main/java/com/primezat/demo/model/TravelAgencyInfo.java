@@ -38,6 +38,15 @@ public class TravelAgencyInfo {
 
     private String themeColor;
 
+    @Column(columnDefinition = "TEXT")
+    private String bannerUrl;
+
+    @Column(columnDefinition = "TEXT")
+    private String heroVideoUrl;
+
+    @Column(columnDefinition = "TEXT")
+    private String faviconUrl;
+
     public TravelAgencyInfo() {
     }
 
@@ -167,5 +176,29 @@ public class TravelAgencyInfo {
 
     public void setThemeColor(String themeColor) {
         this.themeColor = themeColor;
+    }
+
+    public String getBannerUrl() {
+        return bannerUrl;
+    }
+
+    public void setBannerUrl(String bannerUrl) {
+        this.bannerUrl = bannerUrl;
+    }
+
+    public String getHeroVideoUrl() {
+        return heroVideoUrl;
+    }
+
+    public void setHeroVideoUrl(String heroVideoUrl) {
+        this.heroVideoUrl = heroVideoUrl;
+    }
+
+    public String getFaviconUrl() {
+        return faviconUrl;
+    }
+
+    public void setFaviconUrl(String faviconUrl) {
+        this.faviconUrl = faviconUrl;
     }
 }

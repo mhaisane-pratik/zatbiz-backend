@@ -24,6 +24,8 @@ public class TravelVisa {
 
     private Double fees;
     private String approvalStatus;
+    private String customer;
+    private String email;
 
     public TravelVisa() {}
 
@@ -47,4 +49,10 @@ public class TravelVisa {
 
     public String getApprovalStatus() { return approvalStatus; }
     public void setApprovalStatus(String approvalStatus) { this.approvalStatus = approvalStatus; }
+
+    public String getCustomer() { return customer; }
+    public void setCustomer(String customer) { this.customer = customer; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 }

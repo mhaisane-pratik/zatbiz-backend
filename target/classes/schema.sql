@@ -502,7 +502,32 @@ CREATE TABLE IF NOT EXISTS travel_agency_info (
     address VARCHAR(1000),
     description VARCHAR(2000),
     logo_url TEXT,
-    theme_color VARCHAR(255)
+    theme_color VARCHAR(255),
+    banner_url TEXT,
+    hero_video_url TEXT,
+    favicon_url TEXT
+);
+
+-- 32. Scratch Data Table
+CREATE TABLE IF NOT EXISTS scratch_data (
+    id BIGSERIAL PRIMARY KEY,
+    project_id BIGINT UNIQUE,
+    name VARCHAR(255),
+    email VARCHAR(255),
+    password VARCHAR(255),
+    business_type VARCHAR(255),
+    owner_name VARCHAR(255),
+    owner_email VARCHAR(255),
+    mobile_no VARCHAR(255),
+    whatsapp_no VARCHAR(255),
+    address VARCHAR(1000),
+    photo_url TEXT,
+    logo_url TEXT,
+    banner_url TEXT,
+    selected_theme VARCHAR(255),
+    selected_homepage_layout VARCHAR(255),
+    selected_login_layout VARCHAR(255),
+    selected_dashboard_layout VARCHAR(255)
 );
 
 

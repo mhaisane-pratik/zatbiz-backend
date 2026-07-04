@@ -22,7 +22,10 @@ public class ScratchApiController {
         if (opt.isPresent()) {
             return ResponseEntity.ok(opt.get());
         }
-        return ResponseEntity.notFound().build();
+        Scratch defaultScratch = new Scratch();
+        defaultScratch.setProjectId(projectId);
+        defaultScratch.setName("Scratch Website Project");
+        return ResponseEntity.ok(defaultScratch);
     }
 
     @PostMapping
