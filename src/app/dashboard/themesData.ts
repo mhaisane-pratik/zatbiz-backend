@@ -1326,3 +1326,131 @@ export const THEMES_30: ThemeDef[] = [
     ]
   }
 ];
+
+// DYNAMIC HOSPITAL TYPES AND THEMES GENERATOR (150 Combinations)
+const HOSPITAL_TYPES = [
+  { slug: 'general-hospital', name: 'General Hospital', icon: '🏥', tag: 'Comprehensive healthcare services for the whole family.', doctors: [
+    { name: 'Dr. Sarah Jenkins', desc: 'MD - General Medicine, 12 years clinical practice.', fee: 600, dept: 'General Medicine', img: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=500' },
+    { name: 'Dr. John Miller', desc: 'Internal Medicine specialist, senior health practitioner.', fee: 800, dept: 'Internal Medicine', img: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=500' },
+    { name: 'Dr. Emily Watson', desc: 'MD - Emergency Services, trauma unit coordinator.', fee: 700, dept: 'Emergency Care', img: 'https://images.unsplash.com/photo-1594824813573-246434e33963?w=500' }
+  ]},
+  { slug: 'multi-specialty', name: 'Multi Specialty Hospital', icon: '🏥', tag: 'Advanced multi-specialty clinical care under one roof.', doctors: [
+    { name: 'Dr. Adrian Vane', desc: 'Cardiology Consultant, MD, DM, fellowship in heart failure.', fee: 1200, dept: 'Cardiology', img: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=500' },
+    { name: 'Dr. Elena Rostova', desc: 'Pediatric Specialist, MD, child health and wellness advocate.', fee: 1000, dept: 'Pediatrics', img: 'https://images.unsplash.com/photo-1594824813573-246434e33963?w=500' },
+    { name: 'Dr. Julian Cross', desc: 'Senior Orthopedic Surgeon, specialist in joint reconstruction.', fee: 1100, dept: 'Orthopedics', img: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=500' }
+  ]},
+  { slug: 'dental-clinic', name: 'Dental Clinic', icon: '🦷', tag: 'Advanced dental care, orthodontics & smile designing.', doctors: [
+    { name: 'Dr. Sarah Jenkins', desc: 'MDS - Orthodontics, specialist in alignment and aligners.', fee: 800, dept: 'Orthodontics', img: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=500' },
+    { name: 'Dr. James Carter', desc: 'Endodontist, expert in root canal and microscopic treatments.', fee: 750, dept: 'Endodontics', img: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=500' },
+    { name: 'Dr. Elena Rostova', desc: 'Pediatric Dentist, child dental comfort specialist.', fee: 900, dept: 'Pediatric Dentistry', img: 'https://images.unsplash.com/photo-1594824813573-246434e33963?w=500' }
+  ]},
+  { slug: 'eye-hospital', name: 'Eye Hospital', icon: '👁️', tag: 'Precise vision care and advanced laser diagnostics.', doctors: [
+    { name: 'Dr. Robert Chen', desc: 'Ophthalmologist, specialist in laser-assisted cataract surgery.', fee: 900, dept: 'Ophthalmology', img: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=500' },
+    { name: 'Dr. Lisa Ray', desc: 'Optometrist, expert in advanced refraction and contact lenses.', fee: 500, dept: 'Optometry', img: 'https://images.unsplash.com/photo-1594824813573-246434e33963?w=500' },
+    { name: 'Dr. Arthur Vance', desc: 'Vitreoretinal Specialist, clinical manager of retina care.', fee: 1200, dept: 'Retina Services', img: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=500' }
+  ]},
+  { slug: 'orthopedic-hospital', name: 'Orthopedic Hospital', icon: '🦴', tag: 'Restoring joint mobility, bone health, and pain-free living.', doctors: [
+    { name: 'Dr. Julian Cross', desc: 'Joint Replacement Surgeon, knee and hip replacement pioneer.', fee: 1200, dept: 'Joint Replacement', img: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=500' },
+    { name: 'Dr. Mark Gable', desc: 'Sports Medicine physician, consultant for national athletes.', fee: 1000, dept: 'Sports Medicine', img: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=500' },
+    { name: 'Dr. Hannah Stone', desc: 'Spine Specialist, minimally invasive spine surgery advisor.', fee: 1500, dept: 'Spine Care', img: 'https://images.unsplash.com/photo-1594824813573-246434e33963?w=500' }
+  ]},
+  { slug: 'cardiology-hospital', name: 'Cardiology Hospital', icon: '❤️', tag: 'Pioneering heart care, diagnostics, and cardiac surgery.', doctors: [
+    { name: 'Dr. Adrian Vane', desc: 'Cardiologist, DM - Cardiology, expert in diagnostic angiograms.', fee: 1500, dept: 'General Cardiology', img: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=500' },
+    { name: 'Dr. Sophia Reynolds', desc: 'Interventional Cardiologist, specialist in angioplasty and stents.', fee: 1800, dept: 'Interventional Cardiology', img: 'https://images.unsplash.com/photo-1594824813573-246434e33963?w=500' },
+    { name: 'Dr. Liam Vance', desc: 'Electrophysiologist, heart rhythm device coordinator.', fee: 2000, dept: 'Electrophysiology', img: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=500' }
+  ]},
+  { slug: 'neurology-hospital', name: 'Neurology Hospital', icon: '🧠', tag: 'Advanced neurology and neurosurgery diagnostics.', doctors: [
+    { name: 'Dr. Charles Xavier', desc: 'Neurologist, expert in headache, stroke, and seizure management.', fee: 1600, dept: 'Neurology', img: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=500' },
+    { name: 'Dr. Bruce Banner', desc: 'Neurosurgeon, specializing in minimally invasive brain surgery.', fee: 2000, dept: 'Neurosurgery', img: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=500' },
+    { name: 'Dr. Diana Prince', desc: 'Neuro-oncologist, coordinator of brain tumor clinic.', fee: 1800, dept: 'Neuro-Oncology', img: 'https://images.unsplash.com/photo-1594824813573-246434e33963?w=500' }
+  ]},
+  { slug: 'children-hospital', name: 'Children Hospital', icon: '👶', tag: 'Dedicated pediatric and neonatal intensive care.', doctors: [
+    { name: 'Dr. Elena Rostova', desc: 'Pediatric Specialist, MD, child health and vaccines expert.', fee: 900, dept: 'Pediatrics', img: 'https://images.unsplash.com/photo-1594824813573-246434e33963?w=500' },
+    { name: 'Dr. Arthur Vance', desc: 'Neonatologist, managing care for premature and critical infants.', fee: 1200, dept: 'Neonatology', img: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=500' },
+    { name: 'Dr. Clara Oswald', desc: 'Pediatric Surgeon, specialized in childhood anomaly corrections.', fee: 1500, dept: 'Pediatric Surgery', img: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=500' }
+  ]},
+  { slug: 'womens-hospital', name: 'Women\'s Hospital', icon: '🤰', tag: 'Safe maternity, fetal medicine, and gynecology services.', doctors: [
+    { name: 'Dr. Fiona Gallagher', desc: 'Gynecologist, expert in laparoscopic keyhole surgeries.', fee: 1000, dept: 'Gynecology', img: 'https://images.unsplash.com/photo-1594824813573-246434e33963?w=500' },
+    { name: 'Dr. Samantha Jones', desc: 'Obstetrician, specialized in high-risk pregnancy deliveries.', fee: 1200, dept: 'Obstetrics', img: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=500' },
+    { name: 'Dr. Miranda Bailey', desc: 'Maternal-Fetal Medicine expert, fetal screening coordinator.', fee: 1500, dept: 'Fetal Medicine', img: 'https://images.unsplash.com/photo-1594824813573-246434e33963?w=500' }
+  ]},
+  { slug: 'skin-clinic', name: 'Skin Clinic', icon: '✨', tag: 'Advanced clinical dermatology and skin aesthetics.', doctors: [
+    { name: 'Dr. Vanessa Williams', desc: 'Dermatologist, expert in clinical eczema, acne, and psoriasis.', fee: 900, dept: 'Dermatology', img: 'https://images.unsplash.com/photo-1594824813573-246434e33963?w=500' },
+    { name: 'Dr. Christian Troy', desc: 'Cosmetic Surgeon, certified in aesthetic surgeries.', fee: 2000, dept: 'Cosmetic Surgery', img: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=500' },
+    { name: 'Dr. Sean McNamara', desc: 'Aesthetic Practitioner, specialized in laser skin resurfacing.', fee: 1500, dept: 'Aesthetic Medicine', img: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=500' }
+  ]},
+  { slug: 'ent-clinic', name: 'ENT Clinic', icon: '👂', tag: 'Expert ear, nose, throat & allergy diagnostics.', doctors: [
+    { name: 'Dr. Gregory House', desc: 'ENT Specialist, diagnosing chronic sinus and hearing issues.', fee: 1000, dept: 'Otology', img: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=500' },
+    { name: 'Dr. Eric Foreman', desc: 'Otologist, expert in cochlear implants and inner ear mechanics.', fee: 1200, dept: 'Otology', img: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=500' },
+    { name: 'Dr. Allison Cameron', desc: 'Laryngologist, specialist in voice box anomalies.', fee: 1100, dept: 'Laryngology', img: 'https://images.unsplash.com/photo-1594824813573-246434e33963?w=500' }
+  ]},
+  { slug: 'diagnostic-center', name: 'Diagnostic Center', icon: '🔬', tag: 'High-precision radiology and pathology laboratory tests.', doctors: [
+    { name: 'Dr. Stephen Strange', desc: 'Radiologist, MD, expert in MRI and high-res CT scans.', fee: 800, dept: 'Radiology', img: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=500' },
+    { name: 'Dr. John Watson', desc: 'Clinical Pathologist, expert in hematology and cell analysis.', fee: 600, dept: 'Pathology', img: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=500' },
+    { name: 'Dr. Walter White', desc: 'Toxicologist, clinical advisor for fluid analysis.', fee: 750, dept: 'Toxicology', img: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=500' }
+  ]},
+  { slug: 'physiotherapy-clinic', name: 'Physiotherapy Clinic', icon: '🚶', tag: 'Rehabilitative therapy, chiropractic and movement recovery.', doctors: [
+    { name: 'Dr. Tony Stark', desc: 'Physiotherapist, expert in spinal alignment and mobility.', fee: 800, dept: 'Physiotherapy', img: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=500' },
+    { name: 'Dr. Natasha Romanoff', desc: 'Sports Rehab Specialist, post-trauma recovery specialist.', fee: 1000, dept: 'Sports Rehabilitation', img: 'https://images.unsplash.com/photo-1594824813573-246434e33963?w=500' },
+    { name: 'Dr. Steve Rogers', desc: 'Occupational Therapist, expert in functional movements.', fee: 900, dept: 'Occupational Therapy', img: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=500' }
+  ]},
+  { slug: 'mental-health-clinic', name: 'Mental Health Clinic', icon: '🧠', tag: 'Compassionate psychiatric consulting and clinical therapy.', doctors: [
+    { name: 'Dr. Hannibal Lecter', desc: 'MD - Psychiatry, expert in behavioral cognitive therapy.', fee: 1500, dept: 'Psychiatry', img: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=500' },
+    { name: 'Dr. Harleen Quinzel', desc: 'Clinical Psychologist, specialized in anxiety therapy.', fee: 1200, dept: 'Clinical Psychology', img: 'https://images.unsplash.com/photo-1594824813573-246434e33963?w=500' },
+    { name: 'Dr. Sigmund Freud', desc: 'Psychoanalyst, expert in cognitive behavior therapies.', fee: 1400, dept: 'Psychotherapy', img: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=500' }
+  ]},
+  { slug: 'veterinary-hospital', name: 'Veterinary Hospital', icon: '🐾', tag: 'Compassionate animal care, dentistry and surgeries.', doctors: [
+    { name: 'Dr. John Dolittle', desc: 'DVM - Veterinary Medicine, expert in animal care.', fee: 500, dept: 'General Veterinary', img: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=500' },
+    { name: 'Dr. Jane Goodall', desc: 'Exotic Vet Consultant, wildlife treatment specialist.', fee: 700, dept: 'Exotic Animals', img: 'https://images.unsplash.com/photo-1594824813573-246434e33963?w=500' },
+    { name: 'Dr. Steve Irwin', desc: 'Vet Surgeon, coordinator of reptiles and trauma unit.', fee: 800, dept: 'Veterinary Surgery', img: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=500' }
+  ]}
+];
+
+const HOSPITAL_THEMES = [
+  { id: 'vibrant-teal', name: 'Vibrant Teal', primary: '#0d9488', secondary: '#14b8a6', accentBg: '#f0fdfa', gradient: 'from-teal-500 to-cyan-500', bgGradClass: 'from-teal-950 via-slate-900 to-zinc-950', primaryBtnClass: 'bg-teal-600 hover:bg-teal-700 text-white', sidebarBgClass: 'bg-teal-950 text-teal-100', textColorClass: 'text-teal-650' },
+  { id: 'royal-blue', name: 'Royal Blue', primary: '#2563eb', secondary: '#3b82f6', accentBg: '#eff6ff', gradient: 'from-blue-500 to-indigo-500', bgGradClass: 'from-blue-950 via-slate-900 to-zinc-950', primaryBtnClass: 'bg-blue-600 hover:bg-blue-700 text-white', sidebarBgClass: 'bg-blue-955 text-blue-100', textColorClass: 'text-blue-650' },
+  { id: 'emerald-natural', name: 'Emerald Natural', primary: '#16a34a', secondary: '#22c55e', accentBg: '#f0fdf4', gradient: 'from-green-500 to-emerald-500', bgGradClass: 'from-green-955 via-teal-955 to-slate-955', primaryBtnClass: 'bg-green-600 hover:bg-green-750 text-white', sidebarBgClass: 'bg-green-955 text-green-100', textColorClass: 'text-green-705' },
+  { id: 'neon-cyber', name: 'Neon Cyber-Health', primary: '#a855f7', secondary: '#06b6d4', accentBg: '#faf5ff', gradient: 'from-purple-500 to-cyan-500', bgGradClass: 'from-purple-955 via-slate-950 to-black', primaryBtnClass: 'bg-purple-600 hover:bg-cyan-600 text-white', sidebarBgClass: 'bg-slate-950 text-purple-100 border-r border-slate-800', textColorClass: 'text-purple-650' },
+  { id: 'warm-amber', name: 'Warm Amber', primary: '#d97706', secondary: '#f59e0b', accentBg: '#fef3c7', gradient: 'from-amber-500 to-yellow-600', bgGradClass: 'from-amber-955 via-stone-900 to-stone-955', primaryBtnClass: 'bg-amber-700 hover:bg-amber-800 text-white', sidebarBgClass: 'bg-stone-900 text-stone-100', textColorClass: 'text-amber-705' },
+  { id: 'rose-coral', name: 'Rose Coral', primary: '#e11d48', secondary: '#fda4af', accentBg: '#fff1f2', gradient: 'from-rose-500 to-pink-500', bgGradClass: 'from-rose-955 via-zinc-900 to-zinc-955', primaryBtnClass: 'bg-rose-600 hover:bg-rose-700 text-white', sidebarBgClass: 'bg-zinc-905 text-zinc-100', textColorClass: 'text-rose-500' },
+  { id: 'clean-slate', name: 'Clean Slate', primary: '#475569', secondary: '#64748b', accentBg: '#f8fafc', gradient: 'from-slate-500 to-zinc-650', bgGradClass: 'from-slate-950 via-zinc-900 to-slate-950', primaryBtnClass: 'bg-slate-700 hover:bg-slate-850 text-white', sidebarBgClass: 'bg-slate-900 text-slate-100', textColorClass: 'text-slate-700' },
+  { id: 'dark-obsidian', name: 'Dark Obsidian', primary: '#0f172a', secondary: '#1e293b', accentBg: '#f1f5f9', gradient: 'from-slate-900 via-stone-950 to-black', bgGradClass: 'from-slate-900 via-stone-950 to-black', primaryBtnClass: 'bg-slate-850 hover:bg-slate-900 text-white', sidebarBgClass: 'bg-slate-955 text-slate-205 border-r border-slate-800', textColorClass: 'text-slate-605' },
+  { id: 'lilac-aura', name: 'Lilac Aura', primary: '#7c3aed', secondary: '#c084fc', accentBg: '#f5f3ff', gradient: 'from-violet-500 to-purple-500', bgGradClass: 'from-violet-950 via-purple-950 to-zinc-955', primaryBtnClass: 'bg-violet-650 hover:bg-violet-700 text-white', sidebarBgClass: 'bg-purple-950 text-purple-100', textColorClass: 'text-purple-700' },
+  { id: 'sunset-crimson', name: 'Sunset Crimson', primary: '#b91c1c', secondary: '#f87171', accentBg: '#fef2f2', gradient: 'from-red-500 to-rose-600', bgGradClass: 'from-red-955 via-stone-900 to-stone-955', primaryBtnClass: 'bg-red-700 hover:bg-red-800 text-white', sidebarBgClass: 'bg-stone-900 text-stone-100', textColorClass: 'text-red-500' }
+];
+
+// Generate 150 unique hospital themes and push to THEMES_30
+HOSPITAL_TYPES.forEach((hType) => {
+  HOSPITAL_THEMES.forEach((hTheme, idx) => {
+    THEMES_30.push({
+      id: `hospital-${hType.slug}-${hTheme.id}`,
+      name: `${hType.name} - ${hTheme.name}`,
+      industry: 'Hospital',
+      desc: `Premium custom theme built for ${hType.name}. Features specialized layouts, colors, and pre-configured doctors.`,
+      icon: hType.icon,
+      brandIcon: '🩺',
+      tagline: hType.tag,
+      primaryColor: hTheme.primary,
+      secondaryColor: hTheme.secondary,
+      bgColor: hTheme.accentBg === '#0c0a09' ? '#09090b' : '#fafafa',
+      textColor: '#1e293b',
+      accentBg: hTheme.accentBg,
+      gradient: hTheme.gradient,
+      bgGradClass: hTheme.bgGradClass,
+      textColorClass: hTheme.textColorClass,
+      primaryBtnClass: hTheme.primaryBtnClass,
+      sidebarBgClass: hTheme.sidebarBgClass,
+      heroImageUrl: `https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1000&auto=format&fit=crop&q=80`,
+      bannerImageUrl: `https://images.unsplash.com/photo-150481373149-e957c6296406?w=1000&auto=format&fit=crop&q=80`,
+      products: hType.doctors.map((doc, docIdx) => ({
+        name: doc.name,
+        description: doc.desc,
+        price: doc.fee,
+        category: doc.dept,
+        icon: '👨‍⚕️',
+        imageUrl: doc.img
+      }))
+    });
+  });
+});
+

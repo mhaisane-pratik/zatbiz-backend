@@ -6,6 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Column;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "hospital_info")
@@ -15,19 +16,26 @@ public class HospitalInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "project_id", unique = true, nullable = false)
     private Long projectId;
     
     private String subcategory; // Multi-Speciality Hospital, Clinic, Dental Clinic, Eye Hospital, etc.
     
+    @Column(name = "name")
     private String companyName;
     
+    @Transient
     private String businessName;
 
-    @Column(length = 2000)
+    @Column(name = "business_details", columnDefinition = "TEXT")
     private String companyDescription;
 
+    @Transient
     private String ownerName;
+
+    @Column(name = "phone")
     private String mobileNo;
+
     private String email;
     private String city;
     private String state;
@@ -35,8 +43,12 @@ public class HospitalInfo {
     private String pincode;
 
     @Column(columnDefinition = "TEXT")
+    private String address;
+
+    @Column(name = "logo_url", columnDefinition = "TEXT")
     private String logoUrl;
 
+    @Column(name = "theme_color")
     private String themeColor;
 
     public HospitalInfo() {
@@ -177,5 +189,13 @@ public class HospitalInfo {
 
     public void setThemeColor(String themeColor) {
         this.themeColor = themeColor;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

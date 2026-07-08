@@ -72,5 +72,6 @@ public class HospitalInfoApiController {
         existing.setPincode(source.getPincode());
         existing.setLogoUrl(source.getLogoUrl());
         existing.setThemeColor(source.getThemeColor());
+        existing.setAddress(source.getAddress());
     }
 }

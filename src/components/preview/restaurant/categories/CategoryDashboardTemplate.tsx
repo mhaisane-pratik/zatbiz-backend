@@ -5,7 +5,8 @@ import { useCategoryDashboardState } from './useCategoryDashboardState';
 import { DashboardDinerOverview } from './DashboardDinerOverview';
 import { DashboardBookingsView } from './DashboardBookingsView';
 import { DashboardItemsView } from './DashboardItemsView';
-import { api } from '@/services/api';
+import { api, getRandomFoodImage } from '@/services/api';
+import { Product } from '@/types';
 import { useDarkMode } from '@/hooks/useDarkMode';
 import {
   UserProfilePanel,
@@ -37,6 +38,38 @@ export function CategoryDashboardTemplate({
   const { isDarkMode, toggleDarkMode } = useDarkMode();
   const [activeTab, setActiveTab] = useState<string>('overview');
   const router = useRouter();
+
+  const [cart, setCart] = useState<{ product: Product; quantity: number }[]>([]);
+
+  const handleAddToCart = (p: Product) => {
+    setCart((prev) => {
+      const existing = prev.find((item) => item.product.id === p.id);
+      if (existing) {
+        return prev.map((item) =>
+          item.product.id === p.id ? { ...item, quantity: item.quantity + 1 } : item
+        );
+      }
+      return [...prev, { product: p, quantity: 1 }];
+    });
+  };
+
+  const handleUpdateCartQuantity = (productId: number, delta: number) => {
+    setCart((prev) => {
+      return prev.map((item) => {
+        if (item.product.id === productId) {
+          const newQty = item.quantity + delta;
+          return newQty > 0 ? { ...item, quantity: newQty } : null;
+        }
+        return item;
+      }).filter(Boolean) as { product: Product; quantity: number }[];
+    });
+  };
+
+  const handleRemoveFromCart = (productId: number) => {
+    setCart((prev) => prev.filter((item) => item.product.id !== productId));
+  };
+
+  const cartCount = cart.reduce((s, i) => s + i.quantity, 0);
 
   const {
     products, fetchDbProducts,
@@ -152,7 +185,7 @@ export function CategoryDashboardTemplate({
                   { id: 'dashboard', label: 'Dashboard', icon: '📊' },
                   { id: 'items', label: 'Plated Menu', icon: emoji },
                   { id: 'bookings', label: 'Reservations', icon: '📅' },
-                  { id: 'orders', label: 'Order Drafts', icon: '🛵' },
+                  { id: 'orders', label: `Order Drafts ${cartCount > 0 ? `(${cartCount})` : ''}`, icon: '🛵' },
                   { id: 'profile', label: 'Profile', icon: '👤' }
                 ]
               : [
@@ -301,14 +334,175 @@ export function CategoryDashboardTemplate({
             <DashboardItemsView
               products={products}
               primaryColor={primaryColor}
+              onAddToCart={handleAddToCart}
             />
           )}
 
           {/* Orders Log (Diner) */}
           {activeTab === 'orders' && isDiner && (
-            <div className="bg-white border rounded-3xl p-6 text-left font-sans" style={{ borderColor: `${primaryColor}20` }}>
-              <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest mb-6 font-serif">Diner Order History</h3>
-              <UserOrdersPanel orders={orders} clientEmail={clientEmail} shopNiche={shopNiche} theme={theme} />
+            <div className="space-y-6">
+              {/* Bucket / Draft Order Checkout */}
+              {cart.length > 0 && (
+                <div className="bg-white border rounded-3xl p-6 text-left font-sans animate-fadeIn" style={{ borderColor: `${primaryColor}33` }}>
+                  <div className="flex justify-between items-center pb-3 border-b border-stone-100 mb-4">
+                    <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest font-serif">
+                      🛒 Current Order Draft (Bucket)
+                    </h3>
+                    <span className="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full font-bold">
+                      {cartCount} items in bucket
+                    </span>
+                  </div>
+
+                  <div className="divide-y divide-stone-100 max-h-80 overflow-y-auto mb-6 pr-2">
+                    {cart.map((item) => {
+                      const itemSubtotal = item.product.price * item.quantity;
+                      return (
+                        <div key={item.product.id} className="py-4 first:pt-0 last:pb-0 flex justify-between items-center">
+                          <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 rounded-xl bg-stone-50 border overflow-hidden flex-shrink-0">
+                              <img src={item.product.imageUrl || getRandomFoodImage(item.product.name)} className="w-full h-full object-cover" alt={item.product.name} />
+                            </div>
+                            <div>
+                              <h4 className="text-xs font-black text-slate-800 uppercase truncate max-w-[200px]">{item.product.name}</h4>
+                              <p className="text-[10px] font-bold text-slate-400 mt-0.5">₹{item.product.price} each</p>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-6">
+                            {/* Quantity Adjusters */}
+                            <div className="flex items-center border border-stone-200 rounded-xl overflow-hidden bg-stone-50">
+                              <button
+                                onClick={() => handleUpdateCartQuantity(item.product.id!, -1)}
+                                className="px-2.5 py-1 text-slate-500 hover:bg-stone-100 font-black cursor-pointer border-none bg-transparent"
+                              >
+                                -
+                              </button>
+                              <span className="px-2 text-xs font-black text-slate-800 select-none">
+                                {item.quantity}
+                              </span>
+                              <button
+                                onClick={() => handleUpdateCartQuantity(item.product.id!, 1)}
+                                className="px-2.5 py-1 text-slate-500 hover:bg-stone-100 font-black cursor-pointer border-none bg-transparent"
+                              >
+                                +
+                              </button>
+                            </div>
+
+                            <div className="text-right w-24">
+                              <span className="text-xs font-black text-slate-800 block">
+                                ₹{itemSubtotal.toFixed(2)}
+                              </span>
+                              <button
+                                onClick={() => handleRemoveFromCart(item.product.id!)}
+                                className="text-[9px] text-rose-500 hover:underline font-bold bg-transparent border-none cursor-pointer p-0"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Summary & Place Order */}
+                  {(() => {
+                    const subtotal = cart.reduce((s, i) => s + i.product.price * i.quantity, 0);
+                    const tax = subtotal * 0.05; // 5% GST
+                    const total = subtotal + tax;
+
+                    const handlePlaceDinerOrder = async (method: 'COD' | 'Wallet') => {
+                      const clientId = localStorage.getItem('clientId');
+                      if (method === 'Wallet' && walletBalance < total) {
+                        alert(`❌ Insufficient wallet balance! You need ₹${total.toFixed(2)} but have ₹${walletBalance.toFixed(2)}.`);
+                        return;
+                      }
+
+                      const orderPayload = {
+                        projectId,
+                        customerId: clientId ? parseInt(clientId, 10) : null,
+                        customerName: userName || 'Diner Guest',
+                        customerEmail: clientEmail,
+                        customerPhone: userPhone || '',
+                        customerAddress: userAddressHome || 'Dine-In Table / Room Service',
+                        itemsJson: JSON.stringify(
+                          cart.map((item) => ({
+                            id: item.product.id,
+                            name: item.product.name,
+                            price: item.product.price,
+                            quantity: item.quantity,
+                            imageUrl: item.product.imageUrl
+                          }))
+                        ),
+                        subtotal: parseFloat(subtotal.toFixed(2)),
+                        tax: parseFloat(tax.toFixed(2)),
+                        total: parseFloat(total.toFixed(2)),
+                        paymentGateway: method === 'Wallet' ? 'Wallet Pay' : 'Stripe',
+                        paymentStatus: method === 'Wallet' ? 'Paid' : 'Pending COD Verification',
+                        status: 'Preparing', // Immediate kitchen status
+                        city: 'Noida',
+                        state: 'UP',
+                        pincode: '201301',
+                        paymentMethod: method === 'Wallet' ? 'Wallet' : 'COD'
+                      };
+
+                      try {
+                        await api.orders.place(orderPayload);
+                        if (method === 'Wallet') {
+                          setWalletBalance((prev) => parseFloat((prev - total).toFixed(2)));
+                        }
+                        alert(`🎉 Feast order sent to kitchen successfully! Status: PREPARING via ${method}.`);
+                        setCart([]);
+                        fetchOrders();
+                      } catch (err) {
+                        console.error('Failed to place order:', err);
+                        alert('Failed to place order. Please try again.');
+                      }
+                    };
+
+                    return (
+                      <div className="border-t border-stone-100 pt-4 space-y-4">
+                        <div className="flex flex-col items-end gap-1.5 text-xs text-slate-500 font-bold">
+                          <div className="flex justify-between w-64">
+                            <span>Subtotal:</span>
+                            <span className="text-slate-800">₹{subtotal.toFixed(2)}</span>
+                          </div>
+                          <div className="flex justify-between w-64">
+                            <span>GST (5%):</span>
+                            <span className="text-slate-800">₹{tax.toFixed(2)}</span>
+                          </div>
+                          <div className="flex justify-between w-64 border-t border-stone-100 pt-1.5 text-sm font-black text-slate-800">
+                            <span>Grand Total:</span>
+                            <span style={{ color: primaryColor }}>₹{total.toFixed(2)}</span>
+                          </div>
+                        </div>
+
+                        <div className="flex justify-end gap-3 pt-2">
+                          <button
+                            onClick={() => handlePlaceDinerOrder('COD')}
+                            className="px-6 py-2.5 bg-white border border-stone-200 hover:bg-stone-50 text-slate-700 font-black rounded-xl text-[10px] uppercase tracking-wider transition shadow-sm cursor-pointer"
+                          >
+                            Send Order (Cash on Delivery)
+                          </button>
+                          <button
+                            onClick={() => handlePlaceDinerOrder('Wallet')}
+                            className="px-6 py-2.5 text-slate-850 font-black rounded-xl text-[10px] uppercase tracking-wider transition border-none shadow-sm cursor-pointer"
+                            style={{ backgroundColor: primaryColor }}
+                          >
+                            Pay with VIP Wallet (Bal: ₹{walletBalance.toFixed(2)})
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </div>
+              )}
+
+              {/* History list */}
+              <div className="bg-white border rounded-3xl p-6 text-left font-sans" style={{ borderColor: `${primaryColor}20` }}>
+                <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest mb-6 font-serif">Diner Order History</h3>
+                <UserOrdersPanel orders={orders} clientEmail={clientEmail} shopNiche={shopNiche} theme={theme} />
+              </div>
             </div>
           )}
 
